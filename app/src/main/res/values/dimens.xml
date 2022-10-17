@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_recycler">24dp</dimen>
+    <dimen name="margin_recycler_item_small">8dp</dimen>
+    <dimen name="margin_recycler_item_large">16dp</dimen>
+    <dimen name="corner_radius_movie_image">3dp</dimen>
+    <dimen name="margin_movie_progress_bar">15dp</dimen>
+    <dimen name="width_poster_thumb">72dp</dimen>
+    <dimen name="height_poster_thumb">96dp</dimen>
+</resources>
