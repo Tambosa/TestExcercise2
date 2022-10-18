@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
     private var currentPage = PAGE_START
     private lateinit var adapter: PaginationAdapter
     private lateinit var layoutManager: LinearLayoutManager
-    private lateinit var movieApi: MovieApi
     private val repository: MovieRepository =
         MovieRepositoryRetrofitImpl(RetrofitClient().provideRetrofit().create(MovieApi::class.java))
     private val viewModel = MainActivityViewModel(repository)
@@ -48,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private fun initViewModel() {
         viewModel.pageList.observe(this) {
             adapter.removeLoadingFooter()
+            isLoading = false
             adapter.addAll(it[0].results)
             if (currentPage <= TOTAL_PAGES) adapter.addLoadingFooter()
             else isLastPage = true
