@@ -10,16 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_recycler_item_small"
-        app:cardBackgroundColor="@color/teal_200"
         app:cardCornerRadius="@dimen/corner_radius_movie_image"
         app:cardPreventCornerOverlap="false">
-
-        <ProgressBar
-            android:id="@+id/movie_progress"
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="@dimen/margin_movie_progress_bar"
-            android:layout_height="@dimen/margin_movie_progress_bar"
-            android:layout_gravity="center" />
 
         <ImageView
             android:id="@+id/movie_poster"

@@ -43,7 +43,6 @@ class PaginationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 movieVH.mMovieDesc.text = movie.overview
                 Log.d("@@@", "onBindViewHolder: ${BASE_IMAGE_URL + movie.posterPath}")
                 movieVH.mPosterImg.load(BASE_IMAGE_URL + movie.posterPath)
-                movieVH.mProgress.visibility = View.GONE
             }
             else -> { //nothing
             }
@@ -84,15 +83,12 @@ class PaginationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val mMovieDesc: TextView
         val mYear: TextView
         val mPosterImg: ImageView
-        val mProgress: ProgressBar
 
         init {
             mMovieTitle = itemView.findViewById<View>(R.id.movie_title) as TextView
             mMovieDesc = itemView.findViewById<View>(R.id.movie_desc) as TextView
             mYear = itemView.findViewById<View>(R.id.movie_year) as TextView
             mPosterImg = itemView.findViewById<View>(R.id.movie_poster) as ImageView
-            mProgress = itemView.findViewById<View>(R.id.movie_progress) as ProgressBar
-            mProgress.visibility = View.VISIBLE
         }
     }
 

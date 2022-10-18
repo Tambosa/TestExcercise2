@@ -3,17 +3,15 @@ package com.aroman.testexcercise2.ui
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aroman.testexcercise2.data.retrofit.*
+import com.aroman.testexcercise2.data.MovieRepositoryRetrofitImpl
+import com.aroman.testexcercise2.data.retrofit.MovieApi
+import com.aroman.testexcercise2.data.retrofit.RetrofitClient
 import com.aroman.testexcercise2.databinding.ActivityMainBinding
-import com.aroman.testexcercise2.domain.PageEntity
+import com.aroman.testexcercise2.domain.MovieRepository
 import com.aroman.testexcercise2.utils.PaginationScrollListener
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +22,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: PaginationAdapter
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var movieApi: MovieApi
+    private val repository: MovieRepository =
+        MovieRepositoryRetrofitImpl(RetrofitClient().provideRetrofit().create(MovieApi::class.java))
+    private val viewModel = MainActivityViewModel(repository)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,26 @@ class MainActivity : AppCompatActivity() {
         adapter = PaginationAdapter()
         layoutManager = LinearLayoutManager(this)
 
+        initRecyclerView()
+        initViewModel()
+        initData()
+    }
+
+    private fun initData() {
+        adapter.addLoadingFooter()
+        viewModel.getPage(getApiKey(), currentPage)
+    }
+
+    private fun initViewModel() {
+        viewModel.pageList.observe(this) {
+            adapter.removeLoadingFooter()
+            adapter.addAll(it[0].results)
+            if (currentPage <= TOTAL_PAGES) adapter.addLoadingFooter()
+            else isLastPage = true
+        }
+    }
+
+    private fun initRecyclerView() {
         binding.apply {
             movieRecyclerView.adapter = adapter
             movieRecyclerView.layoutManager = layoutManager
@@ -43,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                     this@MainActivity.currentPage += 1
 
                     Handler().postDelayed({
-                        loadNextPage()
+                        viewModel.getPage(getApiKey(), currentPage)
                     }, 1000)
                 }
 
@@ -55,75 +77,16 @@ class MainActivity : AppCompatActivity() {
                     get() = this@MainActivity.isLoading
             })
         }
-
-        movieApi = RetrofitClient().provideRetrofit().create(MovieApi::class.java)
-
-        binding.mainProgressBar.visibility = View.GONE
-        loadFirstPage()
     }
 
-    private fun loadFirstPage() {
-        callTopRatedMoviesApi().enqueue(object : Callback<RetrofitResponseEntity> {
-            override fun onResponse(
-                call: Call<RetrofitResponseEntity>,
-                response: Response<RetrofitResponseEntity>
-            ) {
-                val result: List<PageEntity> = parseResults(response)
-                binding.mainProgressBar.visibility = View.GONE
-                adapter.addAll(result[0].results)
-                if (currentPage <= TOTAL_PAGES) adapter.addLoadingFooter()
-                else isLastPage = true
-            }
-
-            override fun onFailure(call: Call<RetrofitResponseEntity>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
-    }
-
-    private fun parseResults(response: Response<RetrofitResponseEntity>): List<PageEntity> {
-        val results = response.body()
-        val returnList = mutableListOf<PageEntity>()
-        if (results != null) {
-            returnList.add(remoteResponseToLocal(results))
-        }
-        return returnList
-    }
-
-    private fun loadNextPage() {
-        callTopRatedMoviesApi().enqueue(object : Callback<RetrofitResponseEntity> {
-            override fun onResponse(
-                call: Call<RetrofitResponseEntity>,
-                response: Response<RetrofitResponseEntity>
-            ) {
-                adapter.removeLoadingFooter()
-                isLoading = false
-
-                val result: List<PageEntity> = parseResults(response)
-                adapter.addAll(result[0].results)
-
-                if (currentPage <= TOTAL_PAGES) adapter.addLoadingFooter()
-                else isLastPage = true
-            }
-
-            override fun onFailure(call: Call<RetrofitResponseEntity>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
-    }
-
-    private fun callTopRatedMoviesApi(): Call<RetrofitResponseEntity> {
+    private fun getApiKey(): String {
         val ai = packageManager.getApplicationInfo(
             this.packageName,
             PackageManager.GET_META_DATA
         )
         val bundle = ai.metaData
         val myApiKey = bundle.getString("com.aroman.testexcercise2.API_KEY")
-
-        return movieApi.getTopRatedMovies(
-            myApiKey!!,
-            currentPage
-        )
+        return myApiKey ?: "Failed to get API key"
     }
 
     companion object {

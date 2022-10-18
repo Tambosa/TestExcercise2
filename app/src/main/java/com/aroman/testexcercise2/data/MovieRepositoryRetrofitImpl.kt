@@ -6,11 +6,17 @@ import com.aroman.testexcercise2.domain.MovieRepository
 import retrofit2.Call
 
 class MovieRepositoryRetrofitImpl(private val movieApi: MovieApi) : MovieRepository {
-    override fun getPopularMovies(apiKey: String, pageIndex: Int): Call<RetrofitResponseEntity> {
+    override suspend fun getPopularMovies(
+        apiKey: String,
+        pageIndex: Int
+    ): Call<RetrofitResponseEntity> {
         return movieApi.getPopularMovies(apiKey, pageIndex)
     }
 
-    override fun getTopRatedMovies(apiKey: String, pageIndex: Int): Call<RetrofitResponseEntity> {
+    override suspend fun getTopRatedMovies(
+        apiKey: String,
+        pageIndex: Int
+    ): Call<RetrofitResponseEntity> {
         return movieApi.getTopRatedMovies(apiKey, pageIndex)
     }
 }
