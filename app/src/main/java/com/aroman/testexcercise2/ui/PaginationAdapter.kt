@@ -1,6 +1,5 @@
 package com.aroman.testexcercise2.ui
 
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,30 +13,22 @@ import com.aroman.testexcercise2.R
 import com.aroman.testexcercise2.domain.MovieEntity
 
 
-class PaginationAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PaginationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         const val ITEM = 0
         const val LOADING = 1
-        const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w150"
+        const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w185"
     }
 
     private var movieList = arrayListOf<MovieEntity>()
     private var isLoading = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            ITEM -> getViewHolder(parent, LayoutInflater.from(parent.context))
-            else -> LoadingVH(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_progress, parent, false)
-            )
+            ITEM -> MovieVH(inflater.inflate(R.layout.item_movie_recycler, parent, false))
+            else -> LoadingVH(inflater.inflate(R.layout.item_progress, parent, false))
         }
-    }
-
-    private fun getViewHolder(
-        parent: ViewGroup,
-        inflater: LayoutInflater
-    ): RecyclerView.ViewHolder {
-        return MovieVH(inflater.inflate(R.layout.item_movie_recycler, parent, false))
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

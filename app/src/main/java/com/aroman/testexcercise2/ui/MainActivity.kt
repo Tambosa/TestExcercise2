@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
                     Handler().postDelayed({
                         loadNextPage()
-                    }, 100)
+                    }, 1000)
                 }
 
                 override val totalPageCount: Int
