@@ -20,7 +20,6 @@ import com.aroman.testexcercise2.databinding.ActivityMainBinding
 import com.aroman.testexcercise2.domain.MovieRepository
 import com.aroman.testexcercise2.utils.PaginationScrollListener
 
-
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var isLoading = false
@@ -61,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     private fun onPosterClick(position: Int) {
         val view = LayoutInflater.from(this).inflate(R.layout.alert_image, null)
         val image = view.findViewById<ImageView>(R.id.dialog_imageview)
-        image.load("https://image.tmdb.org/t/p/w780" + adapter.getData()[position].posterPath)
+        image.load(IMAGE_LARGE_PATH + adapter.getData()[position].posterPath)
 
         val builder = AlertDialog.Builder(this)
         builder.setView(view)
@@ -124,5 +123,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val PAGE_START = 1
         const val TOTAL_PAGES = 5
+        const val IMAGE_LARGE_PATH = "https://image.tmdb.org/t/p/w780"
     }
 }
