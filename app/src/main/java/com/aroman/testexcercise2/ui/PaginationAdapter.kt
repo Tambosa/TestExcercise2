@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -13,7 +12,10 @@ import com.aroman.testexcercise2.R
 import com.aroman.testexcercise2.domain.MovieEntity
 
 
-class PaginationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PaginationAdapter(
+    private val onOverviewClick: (position: Int) -> Unit,
+    private val onPosterClick: (position: Int) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         const val ITEM = 0
         const val LOADING = 1
@@ -43,6 +45,9 @@ class PaginationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 movieVH.mMovieDesc.text = movie.overview
                 Log.d("@@@", "onBindViewHolder: ${BASE_IMAGE_URL + movie.posterPath}")
                 movieVH.mPosterImg.load(BASE_IMAGE_URL + movie.posterPath)
+
+                movieVH.mMovieDesc.setOnClickListener { onOverviewClick(position) }
+                movieVH.mPosterImg.setOnClickListener { onPosterClick(position) }
             }
             else -> { //nothing
             }
@@ -77,6 +82,7 @@ class PaginationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemRemoved(movieList.size - 1)
     }
 
+    fun getData() = movieList
 
     inner class MovieVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val mMovieTitle: TextView

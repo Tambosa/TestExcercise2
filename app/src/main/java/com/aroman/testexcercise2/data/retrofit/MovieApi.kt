@@ -6,13 +6,13 @@ import retrofit2.http.Query
 
 interface MovieApi {
     @GET("movie/popular")
-    suspend fun getPopularMovies(
+    fun getPopularMovies(
         @Query("api_key") apiKey: String,
         @Query("page") pageIndex: Int
     ): Call<RetrofitResponseEntity>
 
     @GET("movie/top_rated")
-    suspend fun getTopRatedMovies(
+    fun getTopRatedMovies(
         @Query("api_key") apiKey: String,
         @Query("page") pageIndex: Int
     ): Call<RetrofitResponseEntity>
